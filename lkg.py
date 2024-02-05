@@ -1,6 +1,7 @@
 import os
 import shutil
-from PyQt5.QtWidgets import QApplication, QFileDialog, QWidget, QVBoxLayout, QPushButton, QTextEdit, QListWidget, QLineEdit, QHBoxLayout, QSizePolicy, QListWidgetItem
+from PyQt5.QtWidgets import QApplication, QFileDialog, QWidget, QVBoxLayout, QPushButton, QTextEdit, QListWidget, QLineEdit, QHBoxLayout, QSizePolicy, QListWidgetItem,  QMessageBox
+
 #### Made by HR
 class FileMover(QWidget):
     def __init__(self):
@@ -57,6 +58,7 @@ class FileMover(QWidget):
     def search_and_display_files(self): ### 클릭 시 반응하는 기능
         try:
             if not self.source_folder: # not 아니면 실행 X
+                QMessageBox.warning(self, 'Error','소스 폴더를 선택하세요.', QMessageBox.Ok)
                 print("소스 폴더를 선택하세요.")
                 return
 
@@ -67,26 +69,31 @@ class FileMover(QWidget):
             # 검색 결과를 보여주기 전에 기존 목록을 초기화합니다.
             self.file_list_widget.clear()
             
-            # 소스 폴더에서 파일을 찾아 검색 텍스트를 포함하는 경우 목록에 추가합니다.
-            for file_name in os.listdir(self.source_folder):
-                if any(substring in file_name for substring in search_texts):
-                    item = QListWidgetItem(file_name)
-                    self.file_list_widget.addItem(item)
+            found_files = [file_name for file_name in os.listdir(self.source_folder) if any(substring in file_name for substring in search_texts)]
+
+            if not found_files:
+                QMessageBox.warning(self, '알림', '검색 결과가 없습니다.', QMessageBox.Ok)
+                return
+
+            for file_name in found_files:
+                item = QListWidgetItem(file_name)
+                self.file_list_widget.addItem(item)
 
         except Exception as e:
             print("오류 발생:", str(e))
 
-    def move_selected_file(self): ### 클릭 시 반응하는 기능
+    def move_selected_file(self):
         try:
-            if not self.source_folder or not self.destination_folder: ## 선택 안할 시 실행 안되게 막는 code
+            if not self.source_folder or not self.destination_folder:
                 print("소스 폴더와 대상 폴더를 선택하세요.")
+                QMessageBox.warning(self, 'Error','대상 폴더를 선택하세요.', QMessageBox.Ok) ## 대상 폴더 없을 때 뜨는 Error
                 return
 
             # 사용자가 선택한 파일 이름을 가져옵니다.
-            selected_item = self.file_list_widget.currentItem()
+            selected_items = [self.file_list_widget.item(i) for i in range(self.file_list_widget.count())]
+            selected_files = [item.text() for item in selected_items]
 
-            if selected_item:
-                file_name = selected_item.text()
+            for file_name in selected_files:
                 source_path = os.path.join(self.source_folder, file_name)
                 destination_path = os.path.join(self.destination_folder, file_name)
 
@@ -95,33 +102,35 @@ class FileMover(QWidget):
                     shutil.move(source_path, destination_path)
                     print(f"{file_name} 파일을 이동했습니다.")
                     # 파일 이동 후 목록을 갱신합니다.  파일 삭제하는 경우에는 중요함
-                    self.search_and_display_files() 
+                    self.search_and_display_files()
                 else:
                     print(f"{file_name} 파일이 소스 폴더에 존재하지 않습니다.")
 
         except Exception as e:
             print("오류 발생:", str(e))
 
-    def copy_selected_file(self): ### 클릭 시 반응하는 기능
+
+    def copy_selected_file(self):
         try:
-            if not self.source_folder or not self.destination_folder: ## 선택 안할 시 실행 안되게 막는 code
+            if not self.source_folder or not self.destination_folder:
                 print("소스 폴더와 대상 폴더를 선택하세요.")
+                QMessageBox.warning(self, 'Error','대상 폴더를 선택하세요.', QMessageBox.Ok)
                 return
 
             # 사용자가 선택한 파일 이름을 가져옵니다.
-            selected_item = self.file_list_widget.currentItem()
+            selected_items = [self.file_list_widget.item(i) for i in range(self.file_list_widget.count())]
+            selected_files = [item.text() for item in selected_items]
 
-            if selected_item:
-                file_name = selected_item.text()
+            for file_name in selected_files:
                 source_path = os.path.join(self.source_folder, file_name)
                 destination_path = os.path.join(self.destination_folder, file_name)
 
                 if os.path.exists(source_path):
-                    # 파일을 이동하고, 원본 파일을 삭제합니다. 이동이 복사보다 빠름
+                    # 파일을 이동하고, 원본 파일을 삭제합니다. 복사
                     shutil.copy2(source_path, destination_path)
                     print(f"{file_name} 파일을 복사했습니다.")
                     # 파일 이동 후 목록을 갱신합니다.  파일 삭제하는 경우에는 중요함
-                    self.search_and_display_files() 
+                    self.search_and_display_files()
                 else:
                     print(f"{file_name} 파일이 소스 폴더에 존재하지 않습니다.")
 
