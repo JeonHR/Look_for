@@ -70,6 +70,7 @@ class FileMover(QWidget):
             self.file_list_widget.clear()
             
             found_files = [file_name for file_name in os.listdir(self.source_folder) if any(substring in file_name for substring in search_texts)]
+            ## 리스트 컴프리헨션 구문 해석 -> 조건 문에 대한 값 확인 후 source 폴더에 있는 값이랑 일치되는 것만 추출함
 
             if not found_files:
                 QMessageBox.warning(self, '알림', '검색 결과가 없습니다.', QMessageBox.Ok)
