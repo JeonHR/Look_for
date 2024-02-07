@@ -32,5 +32,5 @@ Transfer wanted files to specific path
   - Review to work efficiently across all environments
     
 - Improve understanding of pyqt5 and python commands
-  - Efficient code configuration by understanding of inheritance concepts
+  - Efficient code by understanding of inheritance concepts
   - Implemented matching system based on the list concept
