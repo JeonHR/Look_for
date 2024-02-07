@@ -18,7 +18,7 @@ class FileMover(QWidget):
         search_layout = QHBoxLayout() ## 수평으로 넣기
         self.search_edit = QTextEdit() ## 수평으로 txt file 넣기 QLineEdit-> 한 줄
         self.search_edit.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        self.search_edit.setMinimumSize(100, 100)
+        self.search_edit.setMinimumSize(50 , 100) ## 최소 사이즈 설정 추가로 켜질 떄 앱 크기가 고정되게 정해짐    
         search_layout.addWidget(self.search_edit) ## 수평 첫 추가
         search_button = QPushButton('조회') ## click 버튼
         search_button.clicked.connect(self.search_and_display_files) ## signal 신호
@@ -46,7 +46,7 @@ class FileMover(QWidget):
         layout.addWidget(copy_button)
 
         self.setLayout(layout)
-        self.setWindowTitle('파일 이동 및 복사 프로그램')
+        self.setWindowTitle('파일 이동 및 복사 프로그램(TE_HR)')
         self.show()  ### 앱을 실행하는 기능
 
     def select_source_folder(self): ### 클릭 시 반응하는 기능
@@ -64,8 +64,9 @@ class FileMover(QWidget):
 
             # 텍스트 에디터에서 검색할 텍스트를 읽어옵니다.
             search_texts = self.search_edit.toPlainText().strip().split('\n') ## 여기서 각 list로 만드는 의미
-            
+            print(search_texts)
 
+            
             # 검색 결과를 보여주기 전에 기존 목록을 초기화합니다.
             self.file_list_widget.clear()
             
