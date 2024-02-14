@@ -1,6 +1,6 @@
 import os
 import shutil
-from PyQt5.QtWidgets import QApplication, QFileDialog, QWidget, QVBoxLayout, QPushButton, QTextEdit, QListWidget, QLineEdit, QHBoxLayout, QSizePolicy, QListWidgetItem,  QMessageBox
+from PyQt5.QtWidgets import QApplication, QFileDialog, QWidget, QVBoxLayout, QPushButton, QTextEdit, QListWidget, QHBoxLayout, QSizePolicy, QListWidgetItem,  QMessageBox
 
 #### Made by HR
 class FileMover(QWidget):
@@ -64,14 +64,13 @@ class FileMover(QWidget):
 
             # 텍스트 에디터에서 검색할 텍스트를 읽어옵니다.
             search_texts = self.search_edit.toPlainText().strip().split('\n') ## 여기서 각 list로 만드는 의미
-            print(search_texts)
-
             
             # 검색 결과를 보여주기 전에 기존 목록을 초기화합니다.
             self.file_list_widget.clear()
             
             found_files = [file_name for file_name in os.listdir(self.source_folder) if any(substring in file_name for substring in search_texts)]
             ## 리스트 컴프리헨션 구문 해석 -> 조건 문에 대한 값 확인 후 source 폴더에 있는 값이랑 일치되는 것만 추출함
+            
 
             if not found_files:
                 QMessageBox.warning(self, '알림', '검색 결과가 없습니다.', QMessageBox.Ok)
@@ -92,8 +91,10 @@ class FileMover(QWidget):
                 return
 
             # 사용자가 선택한 파일 이름을 가져옵니다.
-            selected_items = [self.file_list_widget.item(i) for i in range(self.file_list_widget.count())]
-            selected_files = [item.text() for item in selected_items]
+            selected_items = self.file_list_widget.selectedItems() # 선택된 모든 아이템 가져오기
+            selected_files = [item.text() for item in selected_items]  # 선택된 아이템들의 텍스트 추출
+
+
 
             for file_name in selected_files:
                 source_path = os.path.join(self.source_folder, file_name)
@@ -120,8 +121,9 @@ class FileMover(QWidget):
                 return
 
             # 사용자가 선택한 파일 이름을 가져옵니다.
-            selected_items = [self.file_list_widget.item(i) for i in range(self.file_list_widget.count())]
-            selected_files = [item.text() for item in selected_items]
+            selected_items = self.file_list_widget.selectedItems() # 선택된 모든 아이템 가져오기
+            selected_files = [item.text() for item in selected_items]  # 선택된 아이템들의 텍스트 추출
+
 
             for file_name in selected_files:
                 source_path = os.path.join(self.source_folder, file_name)
